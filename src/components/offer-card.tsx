@@ -26,38 +26,44 @@ export function OfferCard({ offer }: OfferCardProps) {
   const currency = state.settings.mainCurrency;
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
+    <Card className="group transition-all duration-300 hover:shadow-lg hover:border-primary/20 flex flex-col h-full">
+      <CardHeader className="pb-3 flex-1">
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-lg">{offer.name}</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              {currency} {offer.baseSalary.toLocaleString()} base
+          <div className="space-y-1">
+            <CardTitle className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
+              {offer.name}
+            </CardTitle>
+            <p className="text-base font-medium text-muted-foreground font-mono">
+              {currency} {offer.baseSalary.toLocaleString()} <span className="text-xs text-muted-foreground/60 font-sans font-normal">base</span>
             </p>
           </div>
-          <div className="flex gap-1.5">
-            {offer.isCurrent && <Badge variant="secondary">Current</Badge>}
-            {offer.isPrivateCompany && <Badge variant="outline">Private</Badge>}
+          <div className="flex flex-col items-end gap-1.5">
+             {offer.isCurrent && (
+                <Badge variant="secondary" className="bg-emerald-100 text-emerald-950 border border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-800 hover:bg-emerald-200">
+                    Current
+                </Badge>
+             )}
+             {offer.isPrivateCompany && <Badge variant="outline" className="text-xs">Private</Badge>}
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="sm" asChild>
+        <div className="flex gap-2 pt-2 border-t mt-2 opacity-60 group-hover:opacity-100 transition-opacity">
+          <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground" asChild>
             <Link to={`/offer/${offer.id}`}>
-              <Pencil className="h-4 w-4 mr-1" />
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
               Edit
             </Link>
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => duplicateOffer(offer.id)}>
-            <Copy className="h-4 w-4 mr-1" />
+          <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-foreground" onClick={() => duplicateOffer(offer.id)}>
+            <Copy className="h-3.5 w-3.5 mr-1.5" />
             Duplicate
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-                <Trash2 className="h-4 w-4 mr-1" />
-                Delete
+              <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-destructive ml-auto">
+                <Trash2 className="h-3.5 w-3.5" />
+                <span className="sr-only">Delete</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -69,7 +75,7 @@ export function OfferCard({ offer }: OfferCardProps) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteOffer(offer.id)}>Delete</AlertDialogAction>
+                <AlertDialogAction onClick={() => deleteOffer(offer.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

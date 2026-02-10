@@ -4,7 +4,7 @@ import { useAppState } from '@/lib/app-context';
 import { encodeShareUrl } from '@/lib/share';
 import { OfferCard } from '@/components/offer-card';
 import { Button } from '@/components/ui/button';
-import { Plus, Share2 } from 'lucide-react';
+import { Plus, Share2, FileText } from 'lucide-react';
 
 export function OffersPage() {
   const { state } = useAppState();
@@ -26,22 +26,26 @@ export function OffersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Offers</h1>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Offers</h1>
+          <p className="text-muted-foreground mt-1">Manage and compare your job offers.</p>
+        </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleShare}
             disabled={state.offers.length === 0}
+            className="hidden sm:flex"
           >
-            <Share2 className="h-4 w-4 mr-1" />
+            <Share2 className="h-4 w-4 mr-2" />
             {copied ? 'Copied!' : 'Share'}
           </Button>
-          <Button size="sm" asChild>
+          <Button size="sm" asChild className="shadow-sm">
             <Link to="/offer/new">
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4 mr-2" />
               Add Offer
             </Link>
           </Button>
@@ -49,12 +53,23 @@ export function OffersPage() {
       </div>
 
       {state.offers.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
-          <p className="text-lg">No offers yet</p>
-          <p className="text-sm mt-1">Add your first offer to get started.</p>
+        <div className="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed rounded-xl bg-muted/30">
+          <div className="bg-muted p-4 rounded-full mb-4">
+             <FileText className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold">No offers created yet</h3>
+          <p className="text-muted-foreground max-w-sm mt-2 mb-6">
+            Add your first job offer to start visualizing and comparing your compensation packages.
+          </p>
+          <Button asChild>
+             <Link to="/offer/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Offer
+            </Link>
+          </Button>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {state.offers.map((offer) => (
             <OfferCard key={offer.id} offer={offer} />
           ))}
