@@ -2,6 +2,40 @@
 
 A tool for comparing job offers with after-tax compensation calculations.
 
+## Getting Started
+
+### Prerequisites
+- Node.js (v20 or later recommended)
+- npm
+
+### Local Development
+
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+    The application will be available at `http://localhost:5173`.
+
+## Docker Support
+
+This project includes a Dockerfile for building a production-ready container served by Nginx.
+
+### Build the Image
+```bash
+docker build -t salary-compare .
+```
+
+### Run the Container
+```bash
+docker run -p 8080:80 salary-compare
+```
+The application will be accessible at `http://localhost:8080`.
+
 ## Updating Tax Calculations Yearly
 
 All tax data is located in `src/lib/tax-brackets.ts`. Update the following values each year:
