@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { useAppState } from '@/lib/app-context';
-import { ComparisonTable } from '@/components/comparison-table';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { useAppState } from "@/lib/app-context";
+import { ComparisonTable } from "@/components/comparison-table";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export function ComparePage() {
   const { state } = useAppState();
@@ -23,7 +23,7 @@ export function ComparePage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Compare Offers</h1>
+      <h1 className="text-2xl font-bold">Compare</h1>
       <ComparisonTable />
     </div>
   );

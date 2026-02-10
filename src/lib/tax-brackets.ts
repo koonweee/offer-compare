@@ -53,6 +53,12 @@ export const FICA = {
 };
 
 /**
+ * 2025 Federal Standard Deduction (Single Filer)
+ * Source: IRS Rev. Proc. 2024-40
+ */
+export const FEDERAL_STANDARD_DEDUCTION = 15000;
+
+/**
  * 401(k) Contribution Limit for 2025
  * Does not include catch-up contributions ($7,500 for age 50+)
  */

@@ -9,6 +9,7 @@ const defaultSettings: Settings = {
   taxState: 'CA',
   retirement401k: 0,
   theme: 'system',
+  evMultipliers: [0, 0.5, 0.75, 2, 4],
 };
 
 const defaultOffer: Omit<Offer, 'id' | 'name'> = {
@@ -50,19 +51,8 @@ export function saveState(state: AppState): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-export function exportState(state: AppState): void {
-  const json = JSON.stringify(state, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'offers-data.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 /** Merge defaults into imported state to handle missing fields from older exports */
-function migrateState(parsed: AppState): AppState {
+export function migrateState(parsed: AppState): AppState {
   // Merge default settings with parsed settings
   const settings: Settings = {
     ...defaultSettings,
@@ -79,24 +69,4 @@ function migrateState(parsed: AppState): AppState {
   }));
 
   return { offers, settings };
-}
-
-export function importState(file: File): Promise<AppState> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(reader.result as string) as AppState;
-        if (!Array.isArray(parsed.offers) || !parsed.settings) {
-          reject(new Error('Invalid file format'));
-          return;
-        }
-        resolve(migrateState(parsed));
-      } catch {
-        reject(new Error('Invalid JSON'));
-      }
-    };
-    reader.onerror = () => reject(new Error('Failed to read file'));
-    reader.readAsText(file);
-  });
 }
