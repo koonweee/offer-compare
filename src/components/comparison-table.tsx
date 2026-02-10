@@ -233,7 +233,7 @@ function CombinedDataRow({
               delta && yearly < 0 && "text-red-600 dark:text-red-400"
             )}
           >
-            <span className="inline-flex flex-col items-start gap-0.5">
+            <span className="inline-flex flex-col items-end gap-0.5">
               {hasPct && (
                 <span className="font-medium self-end">
                   {pct > 0 ? '+' : ''}{Math.round(pct)}%
@@ -273,6 +273,7 @@ export function ComparisonTable() {
   const [showYearByYear, setShowYearByYear] = useState(false);
   const [showDelta, setShowDelta] = useState(true);
   const [showEVDelta, setShowEVDelta] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [showSecondary, setShowSecondary] = useState(false);
 
   const { mainCurrency, secondaryCurrency, conversionRate } = settings;
@@ -395,12 +396,12 @@ export function ComparisonTable() {
                 colSpan={colSpan}
                 open={showEV}
                 onToggle={() => setShowEV(!showEV)}
-                tooltip="Estimated total compensation with equity valued at reduced multiples (0.75x, 0.5x) to account for private company risk"
+                tooltip={`Estimated total compensation with equity valued at configured multiples (${settings.evMultipliers.slice().sort((a, b) => a - b).map((m) => `${m}x`).join(', ')})`}
               />
             </tbody>
             {showEV && (
               <tbody>
-                {[0, 1].map((evIdx) => (
+                {evRows[0].map((_, evIdx) => (
                   <CombinedDataRow
                     key={evIdx}
                     label={`Total (${evRows[0][evIdx].label})`}
@@ -518,6 +519,28 @@ export function ComparisonTable() {
             </>
           );
         })()}
+
+        {/* Notes — collapsible, collapsed by default */}
+        <tbody>
+          <SectionHeader
+            title="Notes"
+            colSpan={colSpan}
+            open={showNotes}
+            onToggle={() => setShowNotes(!showNotes)}
+          />
+        </tbody>
+        {showNotes && (
+          <tbody>
+            <tr className="border-t">
+              <td className="px-4 py-2 text-sm font-medium whitespace-nowrap align-top">Notes</td>
+              {offers.map((o) => (
+                <td key={o.id} className="px-4 py-2 text-sm align-top whitespace-pre-wrap break-words max-w-0">
+                  {o.notes || <span className="text-muted-foreground">—</span>}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        )}
       </table>
       <p className="px-4 py-2 text-xs text-muted-foreground border-t">
         All values are post-tax. Hover any <span className="border-b border-dotted border-muted-foreground">dotted-underlined</span> value to see the pre-tax amount.

@@ -1,12 +1,13 @@
 import {
   FEDERAL_BRACKETS,
+  FEDERAL_STANDARD_DEDUCTION,
   FICA,
   STATE_TAX_DATA,
   type TaxBracket,
 } from './tax-brackets';
 
 export interface TaxResult {
-  taxableIncome: number; // Income after 401k deduction
+  taxableIncome: number; // Federal taxable income (after 401k + standard deduction)
   federalTax: number;
   stateTax: number;
   ficaTax: number; // Social Security + Medicare
@@ -69,17 +70,20 @@ export function calculateTaxes(
   state: string,
   retirement401k: number
 ): TaxResult {
-  // Taxable income = income minus 401k deduction (for federal and state only)
-  const taxableIncome = Math.max(0, income - retirement401k);
+  // Federal taxable income = income minus 401k minus standard deduction
+  const federalTaxableIncome = Math.max(0, income - retirement401k - FEDERAL_STANDARD_DEDUCTION);
 
-  // Federal tax on taxable income
-  const federalTax = calculateProgressiveTax(taxableIncome, FEDERAL_BRACKETS);
+  // State taxable income = income minus 401k only (no federal standard deduction)
+  const stateTaxableIncome = Math.max(0, income - retirement401k);
 
-  // State tax on taxable income
+  // Federal tax on federal taxable income
+  const federalTax = calculateProgressiveTax(federalTaxableIncome, FEDERAL_BRACKETS);
+
+  // State tax on state taxable income
   const stateData = STATE_TAX_DATA[state];
   let stateTax = 0;
   if (stateData && !stateData.hasNoIncomeTax) {
-    stateTax = calculateProgressiveTax(taxableIncome, stateData.brackets);
+    stateTax = calculateProgressiveTax(stateTaxableIncome, stateData.brackets);
   }
 
   // FICA is calculated on full income (401k does NOT reduce FICA)
@@ -89,7 +93,7 @@ export function calculateTaxes(
   const effectiveRate = income > 0 ? totalTax / income : 0;
 
   return {
-    taxableIncome,
+    taxableIncome: federalTaxableIncome,
     federalTax,
     stateTax,
     ficaTax,

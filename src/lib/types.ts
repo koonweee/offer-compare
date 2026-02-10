@@ -23,6 +23,7 @@ export interface Settings {
   taxState: string; // State abbreviation (default: 'CA')
   retirement401k: number; // Annual 401k contribution (default: 0)
   theme: ThemePreference;
+  evMultipliers: number[];
 }
 
 export interface AppState {

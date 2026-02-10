@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { useAppState } from '@/lib/app-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { X } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -19,6 +19,82 @@ import {
 } from '@/lib/tax-brackets';
 import { ThemeSelector } from '@/components/theme-selector';
 
+function EVMultipliersCard({
+  multipliers,
+  onChange,
+}: {
+  multipliers: number[];
+  onChange: (multipliers: number[]) => void;
+}) {
+  const [inputValue, setInputValue] = useState('');
+  const sorted = [...multipliers].sort((a, b) => a - b);
+
+  function addMultiplier() {
+    const num = parseFloat(inputValue);
+    if (isNaN(num) || num < 0) return;
+    if (multipliers.includes(num)) return;
+    onChange([...multipliers, num].sort((a, b) => a - b));
+    setInputValue('');
+  }
+
+  function removeMultiplier(value: number) {
+    onChange(multipliers.filter((m) => m !== value));
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Private Company EV</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>EV Multipliers</Label>
+          <div className="flex flex-wrap gap-2">
+            {sorted.map((m) => (
+              <span
+                key={m}
+                className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-1 text-sm font-medium"
+              >
+                {m}x
+                <button
+                  type="button"
+                  onClick={() => removeMultiplier(m)}
+                  className="ml-0.5 rounded-sm hover:bg-muted-foreground/20 p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <Input
+              type="number"
+              step="0.25"
+              min={0}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addMultiplier();
+                }
+              }}
+              placeholder="e.g. 1.5"
+              className="w-32"
+            />
+            <Button type="button" variant="outline" size="sm" onClick={addMultiplier}>
+              Add
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Equity value multipliers used for private company EV scenarios.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function SettingsPage() {
   const { state, updateSettings } = useAppState();
   const settings = state.settings;
@@ -29,16 +105,6 @@ export function SettingsPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <Button variant="outline" size="sm" asChild>
-          <Link to="/">
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
-          </Link>
-        </Button>
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle>Currency</CardTitle>
@@ -145,6 +211,11 @@ export function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      <EVMultipliersCard
+        multipliers={settings.evMultipliers}
+        onChange={(evMultipliers) => update({ evMultipliers })}
+      />
 
       <Card>
         <CardHeader>

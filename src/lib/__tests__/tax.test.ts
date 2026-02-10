@@ -6,7 +6,7 @@ import {
   afterTax,
   formatEffectiveRate,
 } from '../tax';
-import { FEDERAL_BRACKETS } from '../tax-brackets';
+import { FEDERAL_BRACKETS, FEDERAL_STANDARD_DEDUCTION } from '../tax-brackets';
 
 describe('calculateProgressiveTax', () => {
   it('calculates tax for income in first bracket only', () => {
@@ -148,6 +148,29 @@ describe('calculateTaxes', () => {
     const result = calculateTaxes(0, 'CA', 0);
     expect(result.totalTax).toBe(0);
     expect(result.effectiveRate).toBe(0);
+  });
+
+  it('applies standard deduction to federal but not state or FICA', () => {
+    // With WA (no state tax), we can isolate the federal effect
+    const result = calculateTaxes(100000, 'WA', 0);
+
+    // Federal taxable income should be income minus standard deduction
+    expect(result.taxableIncome).toBe(100000 - FEDERAL_STANDARD_DEDUCTION);
+
+    // Federal tax should be on (income - standard deduction), not full income
+    const expectedFederal = calculateProgressiveTax(
+      100000 - FEDERAL_STANDARD_DEDUCTION,
+      FEDERAL_BRACKETS
+    );
+    expect(result.federalTax).toBe(expectedFederal);
+
+    // State tax on a taxing state should use full income (no standard deduction)
+    const caResult = calculateTaxes(100000, 'MA', 0);
+    // MA flat 5% on full income
+    expect(caResult.stateTax).toBe(5000);
+
+    // FICA should be on full income
+    expect(result.ficaTax).toBe(calculateFICA(100000));
   });
 
   it('caps 401k deduction at income level', () => {

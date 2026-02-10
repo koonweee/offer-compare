@@ -1,13 +1,18 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { AppProvider, useAppState } from '@/lib/app-context';
-import { useThemeEffect } from '@/lib/use-theme';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { OffersPage } from '@/pages/offers-page';
-import { OfferFormPage } from '@/pages/offer-form-page';
-import { ComparePage } from '@/pages/compare-page';
-import { SettingsPage } from '@/pages/settings-page';
-import { Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
+import { AppProvider, useAppState } from "@/lib/app-context";
+import { useThemeEffect } from "@/lib/use-theme";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ShareImportHandler } from "@/components/share-import-handler";
+import { OffersPage } from "@/pages/offers-page";
+import { OfferFormPage } from "@/pages/offer-form-page";
+import { ComparePage } from "@/pages/compare-page";
+import { SettingsPage } from "@/pages/settings-page";
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { state } = useAppState();
@@ -15,8 +20,9 @@ function Layout({ children }: { children: React.ReactNode }) {
   useThemeEffect(state.settings.theme);
 
   const tabs = [
-    { label: 'Offers', path: '/' },
-    { label: 'Compare', path: '/compare' },
+    { label: "Offers", path: "/" },
+    { label: "Compare", path: "/compare" },
+    { label: "Settings", path: "/settings" },
   ];
 
   return (
@@ -24,13 +30,8 @@ function Layout({ children }: { children: React.ReactNode }) {
       <header className="border-b">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="text-lg font-bold hover:opacity-80">
-            Salary Compare
+            Offer compare $
           </Link>
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/settings">
-              <Settings className="h-5 w-5" />
-            </Link>
-          </Button>
         </div>
         <nav className="max-w-6xl mx-auto px-4">
           <div className="flex gap-6">
@@ -42,8 +43,8 @@ function Layout({ children }: { children: React.ReactNode }) {
                   to={tab.path}
                   className={`py-2 text-sm font-medium border-b-2 transition-colors ${
                     isActive
-                      ? 'border-primary text-foreground'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                      ? "border-primary text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {tab.label}
@@ -61,6 +62,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <AppProvider>
+      <ShareImportHandler />
       <TooltipProvider>
         <BrowserRouter>
           <Layout>

@@ -62,7 +62,7 @@ export function computeEVRows(offer: Offer, settings: Settings): EVRow[] {
   const bonus = computeAnnualBonus(offer);
   const equityPerYear = computeAnnualizedEquity(offer);
 
-  const multipliers = [0.75, 0.5];
+  const multipliers = [...settings.evMultipliers].sort((a, b) => a - b);
   return multipliers.map((m) => {
     const adjustedEquity = offer.isPrivateCompany
       ? equityPerYear * m
