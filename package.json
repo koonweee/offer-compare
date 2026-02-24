@@ -2,6 +2,7 @@
   "name": "offer-compare",
   "private": true,
   "version": "0.0.0",
+  "description": "Local-first app to compare job offers using pre-tax and estimated after-tax compensation.",
   "type": "module",
   "scripts": {
     "dev": "vite",
