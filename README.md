@@ -1,5 +1,7 @@
 # Offer Compare
 
+> Try at [offer-compare.vercel.app](offer-compare.vercel.app)
+
 Offer Compare is a local-first web app for evaluating job offers by **estimated take-home pay**, not just headline total comp.
 
 It models base, bonus, equity vesting, sign-on, taxes (federal + state + FICA), and private-company equity EV scenarios so you can compare offers side-by-side.
