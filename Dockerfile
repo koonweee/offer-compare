@@ -23,6 +23,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
+COPY docker-entrypoint.d/40-set-env-js.sh /docker-entrypoint.d/40-set-env-js.sh
+RUN chmod +x /docker-entrypoint.d/40-set-env-js.sh
 
 EXPOSE 80
 

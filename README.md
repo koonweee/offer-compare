@@ -43,7 +43,7 @@ App runs at `http://localhost:5173`.
 
 ```bash
 docker build -t offer-compare .
-docker run -p 8080:80 offer-compare
+docker run -e REPLICA_ID=replica-a -p 8080:80 offer-compare
 ```
 
 App runs at `http://localhost:8080`.
